@@ -40,6 +40,12 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: EdgeInsets.all(18.0),
         child: PageView.builder(
+          controller: _controller!,
+            onPageChanged: (page){
+              setState(() {
+                isPressed = false;
+              });
+            },
             itemCount: questions.length,
             itemBuilder: (context, index) {
               return Column(
@@ -79,8 +85,7 @@ class _HomePageState extends State<HomePage> {
                   for (int i = 0; i < questions[index].answers!.length; i++)
                     Container(
                       width: double.infinity,
-                      margin: EdgeInsets.only(
-                          bottom: 20.0, left: 12.0, right: 12.0),
+                      margin: EdgeInsets.only(bottom: 20.0, left: 12.0, right: 12.0),
                       child: MaterialButton(
                         shape: StadiumBorder(),
                         padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -89,8 +94,10 @@ class _HomePageState extends State<HomePage> {
                                 ? isTrue
                                 : isFalse
                             : btnColor,
-                        onPressed: () {
-                          setState(() {
+                        onPressed: isPressed
+                          ? () {}
+                          : () {
+                            setState(() {
                             isPressed = true;
                           });
                           if (questions[index]
@@ -108,7 +115,11 @@ class _HomePageState extends State<HomePage> {
                             )),
                       ),
                     ),
-                  OutlinedButton(onPressed: () {}, child: Text("Next Question"))
+                  OutlinedButton(
+                      onPressed: isPressed ? () {
+                        _controller!.nextPage(duration: Duration(milliseconds: 750), curve: Curves.bounceIn);
+                      } : null,
+                      child: Text("Next Question"))
                 ],
               );
             }),
